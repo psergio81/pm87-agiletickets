@@ -2,6 +2,8 @@ package br.com.caelum.agiletickets.models;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -97,8 +100,48 @@ public class Espetaculo {
      * Repare que a data da primeira sessao é sempre a data inicial.
      */
 	public List<Sessao> criaSessoes(LocalDate inicio, LocalDate fim, LocalTime horario, Periodicidade periodicidade) {
-		// ALUNO: Não apague esse metodo. Esse sim será usado no futuro! ;)
-		return null;
+
+		List<Sessao> listaSessoes = null;
+		
+		if (periodicidade.equals(Periodicidade.DIARIA)) {
+			listaSessoes = getSessoesPeriodicidadeDiaria(inicio, fim, horario);
+		
+		} else if (periodicidade.equals(Periodicidade.SEMANAL)) {
+			
+			
+		}
+		
+		
+		return listaSessoes;
+	}
+
+	private List<Sessao> getSessoesPeriodicidadeDiaria(LocalDate inicio, LocalDate fim, LocalTime horario) {
+		
+		Sessao sessao = new Sessao();
+		List<Sessao> listaSessoes = new ArrayList<Sessao>();
+		
+		int diferencaEntreDias = Days.daysBetween(inicio, fim).getDays();
+		
+		if(diferencaEntreDias == 0){
+			sessao = new Sessao();
+			sessao.setInicio(inicio.toDateTime(horario));
+			
+			listaSessoes.add(sessao);
+			
+			return listaSessoes;
+		}
+		
+		while(diferencaEntreDias >= 0){
+			
+			sessao = new Sessao();
+			sessao.setInicio(inicio.toDateTime(horario));
+			listaSessoes.add(sessao);
+			
+			diferencaEntreDias--;
+			inicio = inicio.plusDays(1);
+		}
+		
+		return listaSessoes;
 	}
 	
 	public boolean Vagas(int qtd, int min)
